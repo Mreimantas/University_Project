@@ -1,5 +1,7 @@
 import pygame
 import json
+import os
+import sys
 
 class GameSettings:
 
@@ -36,9 +38,20 @@ class GameSettings:
         self.player_armor = self.upgrades[2] * 2 
         self.player_weapon = self.upgrades[3] 
 
+    
+
+    def get_settings_file_path(self):
+        if getattr(sys, 'frozen', False):
+            # Path to the executable if frozen
+            base_path = os.path.dirname(sys.executable)
+        else:
+            # Path to the script if running normally
+            base_path = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(base_path, 'settings.json')
 
     def save(self):
-        with open('settings.json', 'w') as f:
+        settings_file = self.get_settings_file_path()
+        with open(settings_file, 'w') as f:
             json.dump({
                 "screen_width": self.screen_width,
                 "screen_height": self.screen_height,
@@ -48,10 +61,10 @@ class GameSettings:
                 "upgrades": self.upgrades
             }, f)
 
-
     def load(self):
+        settings_file = self.get_settings_file_path()
         try:
-            with open('settings.json', 'r') as f:
+            with open(settings_file, 'r') as f:
                 data = json.load(f)
                 self.screen_width = data.get('screen_width', 1280)
                 self.screen_height = data.get('screen_height', 720)

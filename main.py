@@ -2,10 +2,15 @@ import os
 import sys
 import pygame
 
-# Set working directory
-current_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(current_dir)
-sys.path.append(current_dir)
+if getattr(sys, 'frozen', False):
+    # Running as .exe
+    base_dir = os.path.dirname(sys.executable)
+else:
+    # Running as .py
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+os.chdir(base_dir)
+sys.path.append(base_dir)
 
 from settings import GameSettings
 from menu import Menu
